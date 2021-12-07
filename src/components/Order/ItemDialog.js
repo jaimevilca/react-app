@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -49,25 +49,26 @@ TabPanel.propTypes = {
 };
 
 function ItemDialog(props) {
-  const { isOpenDialog, setOpenDialog } = props;
+  const {
+    isOpenDialog,
+    setOpenDialog,
+    items,
+    setItems,
+    setDetail,
+    detail,
+    checked,
+    setChecked,
+  } = props;
 
-  const [checked, setChecked] = React.useState([0]);
-
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+  useEffect(() => {
+    if (items.length > 0) {
+      setOpenDialog(true);
     }
-
-    setChecked(newChecked);
-  };
+  }, [items]);
 
   const handleClose = () => {
     setOpenDialog(false);
+    setItems([]);
   };
 
   const [value, setValue] = React.useState(0);
@@ -83,28 +84,19 @@ function ItemDialog(props) {
     };
   }
 
-  const data = [
-    {
-      title: "Alisados",
-      rows: [
-        { id: 0, description: "Item1 dfdfd Item1 dfdfd ", price: 100 },
-        {
-          id: 1,
-          description: "Item2 Item1 dfdfd Item1 dfdfd",
-          price: [100, 200, 300, 400],
-        },
-        { id: 2, description: "Item1 dfdfd Item1 dfdfd ", price: 100 },
-      ],
-    },
-  ];
-
   const [priceMultiple, setMultiplePrice] = React.useState({});
 
-  const handleChangePriceSelect = (value, id) => {
-    setMultiplePrice({ ...priceMultiple, [id]: value });
+  const handleChangePriceSelect = (value, id, idSection) => {
+    const key = "s" + idSection + "|" + id;
+    setMultiplePrice({ ...priceMultiple, [key]: value });
+
+    const updatePriceDetail = detail.map((d) =>
+      d.key === key ? { ...d, price: value } : d
+    );
+    setDetail(updatePriceDetail);
   };
 
-  const getPrice = (prices, id) => {
+  const getPrice = (idSection, id, prices) => {
     if (typeof prices === "number") {
       return (
         <Typography
@@ -117,8 +109,11 @@ function ItemDialog(props) {
       );
     }
 
-    if (!(id in priceMultiple)) {
-      setMultiplePrice({ ...priceMultiple, [id]: prices[0] });
+    if (!("s" + idSection + "|" + id in priceMultiple)) {
+      setMultiplePrice({
+        ...priceMultiple,
+        ["s" + idSection + "|" + id]: prices[0],
+      });
     }
 
     return (
@@ -127,14 +122,12 @@ function ItemDialog(props) {
         sx={{ m: 1, minWidth: 60, marginTop: -1 }}
       >
         <Select
-          labelId={"label" + id}
-          id={"label" + id}
-          value={priceMultiple[id]}
-          defaultValue={prices[0]}
+          labelId={"label" + idSection + "- " + id}
+          id={"label" + idSection + "- " + id}
+          value={priceMultiple["s" + idSection + "|" + id]}
           onChange={({ target: { value } }) =>
-            handleChangePriceSelect(value, id)
+            handleChangePriceSelect(value, id, idSection)
           }
-          label="Age"
         >
           {prices.map((price, index) => (
             <MenuItem key={index.toString()} value={price}>
@@ -146,22 +139,57 @@ function ItemDialog(props) {
     );
   };
 
-  const getListItems = (rows) => {
+  const isChecked = (idSection, id) => {
+    return checked.indexOf("s" + idSection + "|" + id) !== -1;
+  };
+
+  const addDetail = (id, key, description, price) => {
+    setDetail([...detail,
+      {
+        id,
+        key,
+        price: typeof price === "number" ? price :  priceMultiple[key],
+        description,
+        participants: []
+      }]);
+  };
+
+  const removeDetail = (key) => {
+    const filterDetail = detail.filter((det) => det.key != key);
+    setDetail(filterDetail);
+
+    //setChecked(newChecked);
+  };
+
+  const handleToggle = (idSection, id, description, price) => () => {
+    const value = "s" + idSection + "|" + id;
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      addDetail(id, value, description, price);
+      newChecked.push(value);
+    } else {
+      removeDetail(value);
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
+
+  const getListItems = (idSection, rows) => {
     return (
-      <List
-        sx={{ width: "100%", bgcolor: "background.paper" }}
-        disablePadding
-      >
-        {rows.map(({ id, description, price }) => {
-          const labelId = `checkbox-list-label-${value}`;
+      <List sx={{ width: "100%", bgcolor: "background.paper" }} disablePadding>
+        {rows.map(({ id, detail, price }, idx) => {
+          const labelId = `checkbox-list-label-${id}-${idSection}`;
 
           return (
             <ListItem
-              key={id.toString()}
+              key={idx.toString() + "_" + idSection}
               secondaryAction={
                 <div>
                   <AttachMoneyIcon sx={{ fontSize: 13 }} />
-                  {getPrice(price, id)}
+                  {getPrice(idSection, id, price)}
                 </div>
               }
               disableGutters
@@ -169,22 +197,21 @@ function ItemDialog(props) {
             >
               <ListItemButton
                 role={undefined}
-                onClick={handleToggle(id)}
+                onClick={handleToggle(idSection, id, detail, price)}
                 dense
                 sx={{ padding: 0 }}
               >
-                <>
                 <ListItemIcon>
                   <Checkbox
                     edge="start"
-                    checked={checked.indexOf(id) !== -1}
+                    checked={isChecked(idSection, id)}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{ "aria-labelledby": labelId }}
                   />
                 </ListItemIcon>
-                </>
-                <ListItemText id={labelId} primary={`${description}`} />
+
+                <ListItemText id={labelId} primary={`${detail}`} />
               </ListItemButton>
             </ListItem>
           );
@@ -209,24 +236,22 @@ function ItemDialog(props) {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              {data.map((tab, index) => (
-                <Tab key={index} label={tab.title} {...a11yProps(index)} />
+              {items.map((tab, index) => (
+                <Tab key={index} label={tab.name} {...a11yProps(index)} />
               ))}
             </Tabs>
           </Box>
 
-          {data.map((tab, index) => (
+          {items.map((tab, index) => (
             <TabPanel value={value} key={index} index={index}>
-              <>
-              {getListItems(tab.rows, index)}
-              </>
+              {getListItems(tab.id, tab.items)}
             </TabPanel>
           ))}
         </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} autoFocus>
-          Cerrar
+          Aceptar
         </Button>
       </DialogActions>
     </Dialog>
@@ -236,6 +261,13 @@ function ItemDialog(props) {
 ItemDialog.propTypes = {
   isOpenDialog: PropTypes.bool.isRequired,
   setOpenDialog: PropTypes.func.isRequired,
+  setItems: PropTypes.func.isRequired,
+  setDetail: PropTypes.func.isRequired,
+  items: PropTypes.array.isRequired,
+  detail: PropTypes.array.isRequired,
+
+  checked: PropTypes.array.isRequired,
+  setChecked: PropTypes.func.isRequired,
 };
 
 export default ItemDialog;

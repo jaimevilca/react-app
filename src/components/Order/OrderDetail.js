@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import IconButton from '@mui/material/IconButton';
 import StylistSelectChip from "./StylistSelectChip";
+import PropTypes from "prop-types";
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -34,18 +35,29 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function OrderDetail() {
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+
+
+
+function OrderDetail(props) {
+  const { detail, setDetail, setChecked, names } = props;
+
+  const removeDetail = key => {
+    const filterDetail = detail.filter((det) => det.key != key);
+    setDetail(filterDetail);
+
+    setChecked(e => e.filter(k => k != key));
   }
 
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, '$44'),
-    createData("Ice cream sandwich", 237, 9.0, 37, '$110'),
-    createData("Eclair", 262, 16.0, 24, '$20'),
-    createData("Cupcake", 305, 3.7, 67, '$40'),
-    createData("Gingerbread", 356, 16.0, 49, '$400'),
-  ];
+  const updateParticipants = (key, participants) => {
+
+
+ 
+    const updateParticipantsDetail = detail.map((d) =>
+      d.key === key ? { ...d, participants } : d
+    );
+
+    setDetail(updateParticipantsDetail);    
+  }
 
   return (
     <TableContainer sx={{ marginTop: 4 }} component={Paper}>
@@ -60,22 +72,28 @@ function OrderDetail() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
+          {detail.map(({description, price, key}, index) => (
             <StyledTableRow
-              key={row.name}
+              key={index.toString()}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <StyledTableCell align="right" component="th" scope="row">
                 {index + 1}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.name}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell>
-              <StyledTableCell align="right"><StylistSelectChip/></StyledTableCell>
+              <StyledTableCell align="center">{description}</StyledTableCell>
+              <StyledTableCell align="right">${price}</StyledTableCell>
+              <StyledTableCell align="right">
+                <StylistSelectChip
+                  updateParticipants={updateParticipants}
+                  id={key}
+                  names={names} />
+              </StyledTableCell>
               <StyledTableCell align="right">
                 <IconButton
                   color="primary"
                   aria-label="upload picture"
                   component="span"
+                  onClick={()=> removeDetail(key)}
                 >
                   <DeleteOutlineIcon />
                 </IconButton>
@@ -87,5 +105,12 @@ function OrderDetail() {
     </TableContainer>
   );
 }
+
+OrderDetail.propTypes = {
+  setDetail: PropTypes.func.isRequired,
+  setChecked: PropTypes.func.isRequired,
+  detail: PropTypes.array.isRequired,
+  names: PropTypes.array.isRequired,
+};
 
 export default OrderDetail;

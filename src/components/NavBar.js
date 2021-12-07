@@ -35,6 +35,8 @@ function NavBar() {
   const pages = [
     { text: "Login", link: "/" },
     { text: "Orden", link: "order" },
+    { text: "Buscar", link: "search" },
+    { text: "Dashboard", link: "dashboard" },
   ];
   const settings = ["Dashboard", "Logout"];
 
