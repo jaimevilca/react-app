@@ -1,20 +1,47 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import Order from "../components/Order/Order";
-import SignIn from "../components/SignUp";
+import Login from "../components/Login";
 import NavBar from "../components/NavBar";
 import Search from "../components/Search/Search";
 import Dashboard from "../components/Dashboard/Dashboard";
+import ProtectedRoutes from "./ProtectedRoutes";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../actions/auth";
+import { StyleMessage } from "../components/StyleMessage";
+import { Loading } from "../components/Loading";
 
 export const AppRouter = () => {
+  const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  
+  useEffect(() => {
+    const userLocal = localStorage.getItem("user");
+    if (userLocal) {
+      dispatch(login({ ...JSON.parse(userLocal) }));
+    }
+  }, []);
+
+  /*if (checking) {
+    return <h1>Espere...</h1>;
+  }*/
+
   return (
     <BrowserRouter>
-      <NavBar />
+      {isLoggedIn && <NavBar />}
       <Routes>
-        <Route path="/" element={<SignIn />} />
-        <Route path="order" element={<Order />} />
-        <Route path="search" element={<Search />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route element={<ProtectedRoutes isAuth={isLoggedIn} />}>
+          <Route path="/order" element={<Order />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+
+        <Route path="/" element={!isLoggedIn ? <Login /> : <Dashboard />} />
       </Routes>
+
+      <StyleMessage/>
+      <Loading/>
+
     </BrowserRouter>
   );
 };

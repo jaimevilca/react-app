@@ -3,15 +3,12 @@ import Fab from "@mui/material/Fab";
 import GirlIcon from "@mui/icons-material/Girl";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-//import AirlineSeatFlatAngledIcon from "@mui/icons-material/AirlineSeatFlatAngled";
-//import ContentCutIcon from "@mui/icons-material/ContentCut";
 import PropTypes from "prop-types";
 import Icon from "@mui/material/Icon";
 import { createOrder } from "../dummy/createOrder";
 
 function MainButtons(props) {
   const {  setItems } = props;
-
 
   const setSubItems = (idx) => {
     setItems(createOrder[idx].childs);    
@@ -20,7 +17,7 @@ function MainButtons(props) {
   return (
     <>
       <Grid container spacing={1} alignItems="center">        
-        {createOrder.map(({ id, name }, index) => 
+        {createOrder.map(({ id, name, icon }, index) => 
           <Grid key={index.toString()} item xs={4} sx={{ textAlign: "center" }}>
             <Fab
               color="secondary"
@@ -29,7 +26,7 @@ function MainButtons(props) {
               sx={{ width: 80, height: 80 }}
               onClick={() => setSubItems(index)}
             >
-              <GirlIcon sx={{ fontSize: 50 }} />
+              <Icon sx={{ fontSize: 50 }}>{icon}</Icon>              
             </Fab>            
             <Typography
               variant="button"

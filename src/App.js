@@ -4,26 +4,18 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { ThemeProvider } from "@mui/material/styles";
+
 import { theme } from "./themeConfig";
-
 import { AppRouter } from "./routers/AppRouter";
-import { AuthContext } from "./auth/authContext";
-import { authReducer } from "./auth/authReducer";
-import { useReducer } from "react";
-
-const init = () => {
-  //return JSON.parse(localStorage.getItem("user") || { logged: false });
-  return { logged: false };
-};
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 function App() {
-  const [user, dispatch] = useReducer(authReducer, {}, init);
-
   return (
     <ThemeProvider theme={theme}>
-      <AuthContext.Provider value={{ user, dispatch }}>
+      <Provider store={store}>
         <AppRouter />
-      </AuthContext.Provider>
+      </Provider>
     </ThemeProvider>
   );
 }

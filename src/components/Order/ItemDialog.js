@@ -147,6 +147,7 @@ function ItemDialog(props) {
     setDetail([...detail,
       {
         id,
+        itemId: id,
         key,
         price: typeof price === "number" ? price :  priceMultiple[key],
         description,

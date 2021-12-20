@@ -3,7 +3,7 @@ export const createOrder = [
     id: 1,
     status: "",
     name: "ALISADO",
-    icon: "",
+    icon: "face",
     childs: [
       {
         id: 4,
@@ -54,7 +54,7 @@ export const createOrder = [
     id: 2,
     status: "",
     name: "SPA",
-    icon: "",
+    icon: "airline_seat_flat",
     childs: [],
     items: [],
   },
@@ -62,7 +62,7 @@ export const createOrder = [
     id: 3,
     status: "",
     name: "CORTE",
-    icon: "",
+    icon: "content_cut",
     childs: [],
     items: [],
   },

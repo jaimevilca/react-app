@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,6 +6,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../../actions/ui";
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,9 +22,9 @@ const MenuProps = {
 };
 
 function StylistSelectChip(props) {
-  const { names, updateParticipants, id } = props;
+  const { names, updateParticipants, id, initParticipants } = props;
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  const [personName, setPersonName] = React.useState(initParticipants);
   function getStyles(name, personName, theme) {
     return {
       fontWeight:
@@ -31,19 +34,25 @@ function StylistSelectChip(props) {
     };
   }
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setPersonName(initParticipants);
+  }, [initParticipants])
+
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      // On autofill we get a the stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-
-    updateParticipants(id, value);
+  
+    if (value.length <= 2) { 
+      updateParticipants(id, value);
+    } else {
+      dispatch( openSnackbar('info', 'Solo puede agregar máximo 2 participantes'));      
+    }
   };
 
-  const getNameById = (id) => {
+  const getNameById = (id) => {    
     if (names.length > 0) {
       const filterById = names.filter((i) => i.id === id);
       return filterById.length > 0 ? filterById[0].name : id;
@@ -56,13 +65,13 @@ function StylistSelectChip(props) {
     <FormControl
       sx={{
         m: 1,
-        width: 150,
+        width: 350,
         padding: 0,
         ".MuiSelect-select": {
           padding: 0.5,
         },
       }}
-    >
+    >      
       <Select
         labelId={"demo-multiple-chip-label" + id}
         id={"demo-multiple-chip" + id}
@@ -95,6 +104,7 @@ function StylistSelectChip(props) {
 StylistSelectChip.propTypes = {
   names: PropTypes.array.isRequired,
   updateParticipants: PropTypes.func.isRequired,
+  initParticipants: PropTypes.array.isRequired,
   id: PropTypes.string.isRequired,
 };
 
