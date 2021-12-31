@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import MainButtons from "./MainButtons";
 import Client from "./Client";
@@ -11,28 +11,50 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import { useDispatch } from "react-redux";
 import { openSnackbar } from "../../actions/ui";
-import { ORDER } from "../../utils/constants";
-import { postAuth } from "../../utils/axiosHandler";
+import { CATEGORIES, ORDER } from "../../utils/constants";
+import { getAuth, postAuth } from "../../utils/axiosHandler";
 import { useSelector } from "react-redux";
+import { initOrderData } from "../dummy/initOrder";
 
 function Order() {
   const [isOpenDialog, setOpenDialog] = useState(false);
   const [detail, setDetail] = useState([]);
-
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState({});
   const [checked, setChecked] = React.useState([]);
-
   const { token } = useSelector((state) => state.auth);
+  const [categories, setCategories] = React.useState([]);
+  const dispatch = useDispatch();
 
   const initValues = {
     clientName: "",
     clientPhone: "",
     clientEmail: "",
-    orderDetails: [],
+    validation: {
+      clientName: {
+        isInvalid: false,
+        error: "",
+      },
+    },
   };
 
-  const [form, handleChange] = useForm(initValues);
-  const dispatch = useDispatch();
+  const [form, handleChange, setData] = useForm(initValues);
+
+  //Init data
+  //Uncomment to initialize dummy order's data
+  
+  /*useEffect(() => {
+    if (categories.length > 0) {
+      const { orderDetails, clientName, clientPhone, clientEmail } = initOrderData;
+      setChecked(orderDetails.map((i) => i.key));
+      setDetail(orderDetails);
+      setData({...form, clientName, clientPhone, clientEmail})
+    }
+  }, [categories]);*/
+
+
+  useEffect(() => {
+    getAuth(CATEGORIES, token, ({ data })=> setCategories(data), null, dispatch);
+  }, []);
 
   const isValidateParticipants = () => {
     let emptyParticipants = "";
@@ -51,18 +73,18 @@ function Order() {
       dispatch(
         openSnackbar(
           "warning",
-          "Estilista no seleccionado, verificar fila: " +
-            emptyParticipants, 5000
+          "Estilista no seleccionado, verificar fila: " + emptyParticipants,
+          5000
         )
       );
     }
-    
+
     return !emptyParticipants;
   };
 
   const onSuccessSaveData = (data) => {
     console.log(data);
-  }
+  };
 
   const saveData = () => {
     if (isValidateParticipants()) {
@@ -71,8 +93,7 @@ function Order() {
         orderDetails: [...detail],
       };
       
-      postAuth(ORDER, data, token, onSuccessSaveData, null, dispatch);
-
+      //postAuth(ORDER, data, token, onSuccessSaveData, null, dispatch);
     }
   };
 
@@ -84,9 +105,9 @@ function Order() {
           marginTop: 3,
         }}
       >
-        <MainButtons setItems={setItems} />
+        <MainButtons setItems={setItems} categories={categories} />
 
-        <Client handleChange={handleChange} />
+        <Client handleChange={handleChange} form={form} />
 
         {detail.length === 0 ? (
           <Alert sx={{ marginTop: 3, marginBottom: 2 }} severity="info">
@@ -115,7 +136,6 @@ function Order() {
             </Box>
           </>
         )}
-
         <ItemDialog
           items={items}
           isOpenDialog={isOpenDialog}

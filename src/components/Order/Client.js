@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import PropTypes from "prop-types";
 
 function Client(props) {
-  const { handleChange } = props;
+  const { handleChange, form } = props;
   return (
     <Grid container spacing={1}>
       <Grid item lg={6} xs={12}>
@@ -15,6 +15,8 @@ function Client(props) {
           id="outlined-basic"
           label="Ingrese nombre cliente"
           variant="standard"
+          error={!form.clientName}
+          helperText={!form.clientName && 'Campo requerido'}
         />
       </Grid>
       <Grid item lg={3} xs={6}>
@@ -41,6 +43,7 @@ function Client(props) {
 
 Client.propTypes = {
   handleChange: PropTypes.func.isRequired,
+  form: PropTypes.object.isRequired,
 };
 
 export default Client;

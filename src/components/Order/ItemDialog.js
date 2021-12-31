@@ -35,7 +35,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <div>{children}</div>
         </Box>
       )}
     </div>
@@ -61,14 +61,14 @@ function ItemDialog(props) {
   } = props;
 
   useEffect(() => {
-    if (items.length > 0) {
+    if (Object.keys(items).length !== 0 ) {
       setOpenDialog(true);
     }
   }, [items]);
 
   const handleClose = () => {
     setOpenDialog(false);
-    setItems([]);
+    setItems({});
   };
 
   const [value, setValue] = React.useState(0);
@@ -86,8 +86,12 @@ function ItemDialog(props) {
 
   const [priceMultiple, setMultiplePrice] = React.useState({});
 
+  const getKey = (idSection, id) => {
+    return "c" + items.id + "s" + idSection + "|" + id;
+  }
+
   const handleChangePriceSelect = (value, id, idSection) => {
-    const key = "s" + idSection + "|" + id;
+    const key = getKey(idSection, id);
     setMultiplePrice({ ...priceMultiple, [key]: value });
 
     const updatePriceDetail = detail.map((d) =>
@@ -96,7 +100,18 @@ function ItemDialog(props) {
     setDetail(updatePriceDetail);
   };
 
-  const getPrice = (idSection, id, prices) => {
+  const initDefaultValuePrice = (firstPrice, idSection, id) => {    
+    if (detail.length > 0) {      
+      const selectedPrice = detail.filter(d => d.key === getKey(idSection, id));      
+      if (selectedPrice && selectedPrice.length > 0) {
+        return selectedPrice[0].price;
+      }
+    }
+
+    return firstPrice;
+  }
+
+  const getPrice = (idSection, id, prices) => {    
     if (typeof prices === "number") {
       return (
         <Typography
@@ -109,10 +124,10 @@ function ItemDialog(props) {
       );
     }
 
-    if (!("s" + idSection + "|" + id in priceMultiple)) {
+    if (!(getKey(idSection, id) in priceMultiple)) {
       setMultiplePrice({
         ...priceMultiple,
-        ["s" + idSection + "|" + id]: prices[0],
+        [getKey(idSection, id)]: initDefaultValuePrice(prices[0], idSection, id),
       });
     }
 
@@ -124,7 +139,7 @@ function ItemDialog(props) {
         <Select
           labelId={"label" + idSection + "- " + id}
           id={"label" + idSection + "- " + id}
-          value={priceMultiple["s" + idSection + "|" + id]}
+          value={priceMultiple[getKey(idSection, id)]}
           onChange={({ target: { value } }) =>
             handleChangePriceSelect(value, id, idSection)
           }
@@ -140,7 +155,7 @@ function ItemDialog(props) {
   };
 
   const isChecked = (idSection, id) => {
-    return checked.indexOf("s" + idSection + "|" + id) !== -1;
+    return checked.indexOf(getKey(idSection, id)) !== -1;
   };
 
   const addDetail = (id, key, description, price) => {
@@ -158,12 +173,11 @@ function ItemDialog(props) {
   const removeDetail = (key) => {
     const filterDetail = detail.filter((det) => det.key != key);
     setDetail(filterDetail);
-
     //setChecked(newChecked);
   };
 
   const handleToggle = (idSection, id, description, price) => () => {
-    const value = "s" + idSection + "|" + id;
+    const value = getKey(idSection, id);
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -178,7 +192,7 @@ function ItemDialog(props) {
     setChecked(newChecked);
   };
 
-  const getListItems = (idSection, rows) => {
+  const getListItems = (idSection, rows) => {    
     return (
       <List sx={{ width: "100%", bgcolor: "background.paper" }} disablePadding>
         {rows.map(({ id, detail, price }, idx) => {
@@ -237,13 +251,13 @@ function ItemDialog(props) {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              {items.map((tab, index) => (
+              {Object.keys(items).length !== 0 && items.childs.map((tab, index) => (
                 <Tab key={index} label={tab.name} {...a11yProps(index)} />
               ))}
             </Tabs>
           </Box>
 
-          {items.map((tab, index) => (
+          {Object.keys(items).length !== 0  && items.childs.map((tab, index) => (
             <TabPanel value={value} key={index} index={index}>
               {getListItems(tab.id, tab.items)}
             </TabPanel>
@@ -264,9 +278,8 @@ ItemDialog.propTypes = {
   setOpenDialog: PropTypes.func.isRequired,
   setItems: PropTypes.func.isRequired,
   setDetail: PropTypes.func.isRequired,
-  items: PropTypes.array.isRequired,
+  items: PropTypes.object.isRequired,
   detail: PropTypes.array.isRequired,
-
   checked: PropTypes.array.isRequired,
   setChecked: PropTypes.func.isRequired,
 };

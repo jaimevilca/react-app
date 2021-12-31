@@ -5,20 +5,19 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import PropTypes from "prop-types";
 import Icon from "@mui/material/Icon";
-import { createOrder } from "../dummy/createOrder";
 
 function MainButtons(props) {
-  const {  setItems } = props;
+  const {  setItems, categories } = props;
 
   const setSubItems = (idx) => {
-    setItems(createOrder[idx].childs);    
+    setItems(categories[idx]);    
   }
 
   return (
     <>
       <Grid container spacing={1} alignItems="center">        
-        {createOrder.map(({ id, name, icon }, index) => 
-          <Grid key={index.toString()} item xs={4} sx={{ textAlign: "center" }}>
+        {categories.map(({ id, name, icon }, index) => 
+          <Grid key={index.toString()} item xs={3} sx={{ textAlign: "center" }}>
             <Fab
               color="secondary"
               aria-label=""
@@ -50,6 +49,7 @@ function MainButtons(props) {
 
 MainButtons.propTypes = {  
   setItems: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
 export default MainButtons;
