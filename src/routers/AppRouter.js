@@ -16,7 +16,7 @@ export const AppRouter = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   
   useEffect(() => {
-    const userLocal = localStorage.getItem("user");
+    const userLocal = localStorage.getItem("user");    
     if (userLocal) {
       dispatch(login({ ...JSON.parse(userLocal) }));
     }
@@ -30,8 +30,9 @@ export const AppRouter = () => {
     <BrowserRouter>
       {isLoggedIn && <NavBar />}
       <Routes>
-        <Route element={<ProtectedRoutes isAuth={isLoggedIn} />}>
+        <Route element={<ProtectedRoutes isAuth={!!localStorage.getItem("user") || isLoggedIn} />}>
           <Route path="/order" element={<Order />} />
+          <Route path="/order/:id" element={<Order />} />
           <Route path="/search" element={<Search />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>

@@ -25,7 +25,7 @@ function StylistSelectChip(props) {
   const { names, updateParticipants, id, initParticipants } = props;
   const theme = useTheme();
   const [personName, setPersonName] = React.useState(initParticipants);
-  function getStyles(name, personName, theme) {
+  function getStyles(name, personName) {
     return {
       fontWeight:
         personName.indexOf(name) === -1
@@ -52,13 +52,13 @@ function StylistSelectChip(props) {
     }
   };
 
-  const getNameById = (id) => {    
+  const getName = (username) => {    
     if (names.length > 0) {
-      const filterById = names.filter((i) => i.id === id);
-      return filterById.length > 0 ? filterById[0].name : id;
+      const filterById = names.filter((i) => i.username === username);
+      return filterById.length > 0 ? filterById[0].name : username;
     }
 
-    return id;
+    return username;
   };
 
   return (
@@ -81,17 +81,17 @@ function StylistSelectChip(props) {
         renderValue={(selected, x) => (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {selected.map((value) => (
-              <Chip key={value} label={getNameById(value)} />
+              <Chip key={value} label={getName(value)} />
             ))}
           </Box>
         )}
         MenuProps={MenuProps}
       >
-        {names.map(({ id, name }, index) => (
+        {names.map(({ username, name }, index) => (
           <MenuItem
             key={index.toString()}
-            value={id}
-            style={getStyles(name, personName, theme)}
+            value={username}
+            style={getStyles(username, personName)}
           >
             {name}
           </MenuItem>
@@ -105,7 +105,11 @@ StylistSelectChip.propTypes = {
   names: PropTypes.array.isRequired,
   updateParticipants: PropTypes.func.isRequired,
   initParticipants: PropTypes.array.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
 };
+
+StylistSelectChip.defaultProps = {
+  id: '',  
+}
 
 export default StylistSelectChip;

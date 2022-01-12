@@ -1,4 +1,5 @@
 export const BASE_URL = 'http://localhost:8080';
-export const LOGIN = BASE_URL + '/login';
+export const LOGIN = BASE_URL + '/users/login';
 export const ORDER = BASE_URL + '/orders';
 export const CATEGORIES = BASE_URL + '/categories';
+export const USERS = BASE_URL + '/users';

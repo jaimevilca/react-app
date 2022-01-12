@@ -11,6 +11,7 @@ function Client(props) {
         <TextField
           fullWidth
           name="clientName"
+          value={form.clientName}
           onChange={handleChange}
           id="outlined-basic"
           label="Ingrese nombre cliente"
@@ -23,6 +24,7 @@ function Client(props) {
         <TextField
           id="standard-basic"
           name="clientPhone"
+          value={form.clientPhone}
           onChange={handleChange}
           label="Teléfono"
           variant="standard"
@@ -32,6 +34,7 @@ function Client(props) {
         <TextField
           id="standard-basic"
           label="Email"
+          value={form.clientEmail}          
           name="clientEmail"
           onChange={handleChange}
           variant="standard"
