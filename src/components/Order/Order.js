@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import { useDispatch } from "react-redux";
 import { openSnackbar } from "../../actions/ui";
-import { CATEGORIES, ORDER, USERS } from "../../utils/constants";
+import { CATEGORIES, ORDER, STATUS, USERS, ADMIN } from "../../utils/constants";
 import {
   getAuth,
   postAuth,
@@ -222,12 +222,6 @@ function Order() {
     }
   };
 
-  const PROCESS = "EN PROCESO";
-  const IN_BOX = "EN CAJA";
-  const COMPLETED = "COMPLETADO";
-  const CANCELLED = "ANULADO";
-  const ADMIN = "ADMIN";
-
   return (
     <>
       <Container
@@ -248,9 +242,9 @@ function Order() {
               <Chip
                 label={form.status}
                 color={
-                  form.status === COMPLETED
+                  form.status === STATUS.COMPLETED
                     ? "success"
-                    : form.status === CANCELLED
+                    : form.status === STATUS.CANCELLED
                     ? "error"
                     : "primary"
                 }
@@ -279,13 +273,15 @@ function Order() {
               setChecked={setChecked}
             />
             <Box sx={{ textAlign: "center", paddingTop: 2 }}>
-              {form.status === PROCESS && (
+              {form.status === STATUS.PROCESS && (
                 <Button variant="outlined" color="secondary" onClick={saveData}>
                   Guardar
                 </Button>
               )}
 
-              {![COMPLETED, IN_BOX, CANCELLED].includes(form.status) && (
+              {![STATUS.COMPLETED, STATUS.IN_BOX, STATUS.CANCELLED].includes(
+                form.status
+              ) && (
                 <Button
                   sx={{ marginLeft: 3 }}
                   variant="contained"
@@ -296,7 +292,7 @@ function Order() {
                 </Button>
               )}
 
-              {role === ADMIN && form.status === IN_BOX && (
+              {role === ADMIN && form.status === STATUS.IN_BOX && (
                 <Button
                   sx={{ marginLeft: 3 }}
                   variant="outlined"
@@ -307,7 +303,7 @@ function Order() {
                 </Button>
               )}
 
-              {role === ADMIN && form.status === IN_BOX && (
+              {role === ADMIN && form.status === STATUS.IN_BOX && (
                 <Button
                   sx={{ marginLeft: 3 }}
                   variant="outlined"
@@ -318,7 +314,7 @@ function Order() {
                 </Button>
               )}
 
-              {role === ADMIN && form.status === IN_BOX && (
+              {role === ADMIN && form.status === STATUS.IN_BOX && (
                 <Button
                   sx={{ marginLeft: 3 }}
                   variant="contained"

@@ -2,7 +2,6 @@ import React from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
-
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import List from "@mui/material/List";
@@ -13,7 +12,9 @@ import Chip from "@mui/material/Chip";
 import WomanIcon from "@mui/icons-material/Woman";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import PropTypes from "prop-types";
-import CardActions from "@mui/material/CardActions";
+import Icon from "@mui/material/Icon";
+import { getColor } from "../../utils/constants";
+
 
 const CustomCard = (props) => {
   const { title, subTitle, list, status } = props;
@@ -22,6 +23,7 @@ const CustomCard = (props) => {
     <Card sx={{ maxWidth: 280, position: "relative" }}>
       <Chip
         label={status}
+        color={getColor(status)}
         sx={{
           borderRadius: 0,
           position: "absolute",
@@ -51,7 +53,7 @@ const CustomCard = (props) => {
               secondaryAction={<Chip label={counter} variant="outlined" />}
             >
               <ListItemIcon>
-                {icon === "woman" ? <WomanIcon /> : <ContentCutIcon />}
+                <Icon>{icon}</Icon>                              
               </ListItemIcon>
               <ListItemText primary={description} />
             </ListItem>

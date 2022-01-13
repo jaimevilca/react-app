@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import SettingsIcon from "@mui/icons-material/Settings";
+import Icon from "@mui/material/Icon";
+import { getColor } from "../../utils/constants";
 
 const LittleCard = (props) => {
   const { title, counter, icon } = props;
@@ -17,10 +17,15 @@ const LittleCard = (props) => {
         margin: "0 auto",
         maxWidth: 200,
         maxHeight: 80,
+        borderColor: getColor(title) + '.main',
+        color: getColor(title) + '.main',
+        borderWidth: 1,
+        borderStyle: 'solid',
+        cursor: 'pointer'
       }}
     >
       <div>
-        <Typography variant="h4" component="div" gutterBottom>
+        <Typography variant="h4" component="div" gutterBottom >
           {counter}
         </Typography>
 
@@ -29,8 +34,8 @@ const LittleCard = (props) => {
         </Typography>
       </div>
 
-      <div sx={{ textAlign: "right" }}>
-        {icon}        
+      <div>
+        <Icon sx={{fontSize: 80}}>{icon}</Icon>
       </div>
     </Paper>
   );
