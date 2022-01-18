@@ -40,9 +40,11 @@ function NavBar() {
 
 
   const pages = [
-    { page: "Dashboard", onClick: ()=> navigate("dashboard") },
-    { page: "Orden", onClick: ()=> navigate("order") },
-    { page: "Buscar", onClick: ()=> navigate("search") },
+    { page: "Dashboard", onClick: () => navigate("dashboard") },
+    { page: "Orden", onClick: () => navigate("order") },
+    { page: "User", onClick: () => navigate("user") },
+    { page: "Item", onClick: () => navigate("item") },
+    { page: "Buscar", onClick: () => navigate("search") },
   ];
 
   const dispatch = useDispatch();
@@ -69,8 +71,8 @@ function NavBar() {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" }, alignItems: 'center' }}
           >
-            <Avatar alt={username} src="/test.jpg" sx={{marginRight:1}}/>
-            
+            <Avatar alt={username} src="/test.jpg" sx={{ marginRight: 1 }} />
+
             <Typography variant="button" textAlign="center">Londoño</Typography>
           </Typography>
 
@@ -103,11 +105,11 @@ function NavBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map(({page, onClick}, index) => (
+              {pages.map(({ page, onClick }, index) => (
                 <MenuItem key={index.toString()} onClick={() => { handleCloseNavMenu(); onClick(); }}>
-              
+
                   <Typography textAlign="center">{page}</Typography>
-                  
+
                 </MenuItem>
               ))}
             </Menu>
@@ -121,19 +123,19 @@ function NavBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, flexDirection: 'row-reverse' }}>
-            {pages.map(({page, onClick}, index) => (
-              
-                <Button
+            {pages.map(({ page, onClick }, index) => (
+
+              <Button
                 key={index.toString()}
                 variant="outlined"
                 onClick={() => { handleCloseNavMenu(); onClick(); }}
-                sx={{ textDecoration: 'none', color: "white", display: "block" }}                  
+                sx={{ textDecoration: 'none', color: "white", display: "block" }}
               >
-                
+
                 {page}
-                
-                </Button>
-              
+
+              </Button>
+
             ))}
           </Box>
 
