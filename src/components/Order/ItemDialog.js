@@ -61,7 +61,7 @@ function ItemDialog(props) {
   } = props;
 
   useEffect(() => {
-    if (Object.keys(items).length !== 0 ) {
+    if (Object.keys(items).length !== 0) {
       setOpenDialog(true);
     }
   }, [items]);
@@ -100,9 +100,9 @@ function ItemDialog(props) {
     setDetail(updatePriceDetail);
   };
 
-  const initDefaultValuePrice = (firstPrice, idSection, id) => {    
-    if (detail.length > 0) {      
-      const selectedPrice = detail.filter(d => d.key === getKey(idSection, id));      
+  const initDefaultValuePrice = (firstPrice, idSection, id) => {
+    if (detail.length > 0) {
+      const selectedPrice = detail.filter(d => d.key === getKey(idSection, id));
       if (selectedPrice && selectedPrice.length > 0) {
         return selectedPrice[0].price;
       }
@@ -111,7 +111,7 @@ function ItemDialog(props) {
     return firstPrice;
   }
 
-  const getPrice = (idSection, id, prices) => {    
+  const getPrice = (idSection, id, prices) => {
     if (typeof prices === "number") {
       return (
         <Typography
@@ -160,14 +160,14 @@ function ItemDialog(props) {
 
   const addDetail = (id, key, description, price) => {
     setDetail([...detail,
-      {
-        id,
-        itemId: id,
-        key,
-        price: typeof price === "number" ? price :  priceMultiple[key],
-        description,
-        participants: []
-      }]);
+    {
+      id,
+      itemId: id,
+      key,
+      price: typeof price === "number" ? price : priceMultiple[key],
+      description,
+      participants: []
+    }]);
   };
 
   const removeDetail = (key) => {
@@ -192,7 +192,7 @@ function ItemDialog(props) {
     setChecked(newChecked);
   };
 
-  const getListItems = (idSection, rows) => {    
+  const getListItems = (idSection, rows) => {
     return (
       <List sx={{ width: "100%", bgcolor: "background.paper" }} disablePadding>
         {rows.map(({ id, detail, price }, idx) => {
@@ -257,7 +257,7 @@ function ItemDialog(props) {
             </Tabs>
           </Box>
 
-          {Object.keys(items).length !== 0  && items.childs.map((tab, index) => (
+          {Object.keys(items).length !== 0 && items.childs.map((tab, index) => (
             <TabPanel value={value} key={index} index={index}>
               {getListItems(tab.id, tab.items)}
             </TabPanel>
