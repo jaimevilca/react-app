@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import LittleCard from "./LittleCard";
 import Grid from "@mui/material/Grid";
 import Fab from "@mui/material/Fab";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CustomCard from "./CustomCard";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import SettingsIcon from "@mui/icons-material/Settings";
-import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 import { list } from "../dummy/dashboard";
 import { getMainCardIcon } from "../../utils/constants";
 import SummaryCards from "./SummaryCards";
+import { useNavigate } from "react-router-dom";
+import OrderDetailDialog from "./OrderDetailDialog";
 
 const Dashboard = (props) => {
   const ALL_OPTION = "ALL";
@@ -65,6 +63,23 @@ const Dashboard = (props) => {
     return dformat;
   };
 
+  let navigate = useNavigate();
+  const editOrder = (id) => {
+    navigate("../order/" + id, { replace: true });
+  };
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [detailOrder, setDetailOrder] = useState({});
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
+  const openOrder = (order) => {
+    setDetailOrder(order);
+    setOpenDialog(true);
+  };
+
   return (
     <>
       <Container
@@ -87,7 +102,7 @@ const Dashboard = (props) => {
           variant="caption"
           display="block"
         >
-          Last updated: {getCurrentDate()+' '}
+          Last updated: {getCurrentDate() + " "}
           <Fab size="small" color="secondary" aria-label="add">
             <RefreshIcon />
           </Fab>
@@ -108,17 +123,25 @@ const Dashboard = (props) => {
         </Typography>
 
         <Grid container spacing={3}>
-          {data.map(({ title, subTitle, list, status }, index) => (
+          {data.map((order, index) => (
             <Grid key={index.toString()} item xs={4}>
               <CustomCard
-                title={title}
-                subTitle={subTitle}
-                list={list}
-                status={status}
+                title={order.title}
+                subTitle={order.subTitle}
+                list={order.list}
+                editOrder={() => editOrder(order.id)}
+                openOrder={() => openOrder(order)}
+                status={order.status}
               />
             </Grid>
           ))}
         </Grid>
+
+        <OrderDetailDialog
+          order={detailOrder}
+          open={openDialog}
+          handleClose={handleClose}
+        />
       </Container>
     </>
   );

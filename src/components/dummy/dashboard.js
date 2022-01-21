@@ -10,7 +10,7 @@ export const list = [
         icon: "face",
       },
       {
-        description: "Servicios contrsatados",
+        description: "Servicios contratados",
         counter: 1,
         icon: "content_cut",
       },
@@ -19,6 +19,24 @@ export const list = [
     services: 2,
     price: 100,
     status: "EN PROCESO",
+    detail: [
+      {
+        id: 2,
+        itemId: 2,
+        key: "c1s5|2",
+        price: 160,
+        description: "ALISADO FRUTOS EXOTICOS",
+        participants: ["userA", "userB"],
+      },
+      {
+        id: 3,
+        itemId: 3,
+        key: "c1s5|3",
+        price: 70,
+        description: "ANTIFRIZZ",
+        participants: ["userA"],
+      },
+    ],
   },
   {
     id: 5,
