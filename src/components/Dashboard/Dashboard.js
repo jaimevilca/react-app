@@ -5,17 +5,22 @@ import Grid from "@mui/material/Grid";
 import Fab from "@mui/material/Fab";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CustomCard from "./CustomCard";
-import { list } from "../dummy/dashboard";
 import { getMainCardIcon } from "../../utils/constants";
 import SummaryCards from "./SummaryCards";
 import { useNavigate } from "react-router-dom";
 import OrderDetailDialog from "./OrderDetailDialog";
+import { ORDER } from "../../utils/constants";
+import { getAuth } from "../../utils/axiosHandler";
+import { useSelector, useDispatch } from "react-redux";
 
 const Dashboard = (props) => {
   const ALL_OPTION = "ALL";
   const [data, setData] = useState([]);
   const [dataSummary, setDataSummary] = useState([]);
+  const [list, setList] = useState([]);
   const [filterSelected, setFilterSelected] = useState(ALL_OPTION);
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const getCountByStatus = (status) => {
     let counts = {};
@@ -29,6 +34,7 @@ const Dashboard = (props) => {
     const allStatus = list.map((item) => item.status);
     const countByStatus = getCountByStatus(allStatus);
     const status = [...new Set(allStatus)];
+
     const dataMainCards = status.map((i) => {
       return {
         icon: getMainCardIcon[i],
@@ -39,6 +45,16 @@ const Dashboard = (props) => {
 
     setDataSummary(dataMainCards);
   };
+
+  const successData = (orders) => {
+    setList(orders.data);
+  };
+
+  useEffect(() => {
+
+    getAuth(ORDER + "/dashboard", token, (orders) => successData(orders), null, dispatch);
+
+  }, []);
 
   useEffect(() => {
     if (list.length > 0) {
@@ -53,6 +69,8 @@ const Dashboard = (props) => {
       }
     }
   }, [list, filterSelected]);
+
+
 
   const getCurrentDate = () => {
     let d = new Date();
@@ -119,15 +137,15 @@ const Dashboard = (props) => {
           display="block"
           gutterBottom
         >
-          Se encontraron <b>{data.length}</b> resultados
+          Se encontraron <b>{!data ? null : data.length}</b> resultados
         </Typography>
 
         <Grid container spacing={3}>
-          {data.map((order, index) => (
+          {!data ? null : data.map((order, index) => (
             <Grid key={index.toString()} item xs={4}>
               <CustomCard
                 title={order.title}
-                subTitle={order.subTitle}
+                subTitle={order.subtitle}
                 list={order.list}
                 editOrder={() => editOrder(order.id)}
                 openOrder={() => openOrder(order)}

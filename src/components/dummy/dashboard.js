@@ -4,20 +4,19 @@ export const list = [
     title: "Cliente XYZ",
     subTitle: "13/11/2021 10:35 AM",
     list: [
-      {
-        description: "Estilista",
-        counter: 1,
-        icon: "face",
-      },
+
       {
         description: "Servicios contratados",
         counter: 1,
         icon: "content_cut",
       },
-    ],
-    participants: 1,
-    services: 2,
-    price: 100,
+      {
+        description: "Total",
+        counter: "$100",
+        icon: "credit_card",
+      }
+    ]
+    ,
     status: "EN PROCESO",
     detail: [
       {

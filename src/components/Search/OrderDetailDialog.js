@@ -83,8 +83,8 @@ const OrderDetailDialog = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {order.detail &&
-                order.detail.map(
+              {order.orderDetails &&
+                order.orderDetails.map(
                   ({ description, price, key, participants }, index) => (
                     <TableRow
                       key={index.toString()}
@@ -110,7 +110,7 @@ const OrderDetailDialog = (props) => {
                   TOTAL
                 </TableCell>
                 <TableCell variant="head" align="right" sx={{ padding: 0 }}>
-                  ${total}
+                  ${order.total}
                 </TableCell>
               </TableRow>
             </TableBody>

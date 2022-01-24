@@ -6,10 +6,25 @@ import Typography from "@mui/material/Typography";
 import Detail from "./Detail";
 
 const Search = (props) => {
+  const [count, setCount] = React.useState(0);
+  const [query, setQuery] = React.useState("");
+
+
+  const updateCount = (count) => {
+    setCount(count);
+
+  };
+  const handleQuery = (data) => {
+    setQuery(data.join(" AND "));
+    //  setQuery("creationDate>20220123 AND creationDate<20220123");
+
+  };
+
   return (
     <>
       <Container
-        maxWidth="sm"
+        maxWidth="lg"
+
         sx={{
           marginTop: 3,
         }}
@@ -23,7 +38,9 @@ const Search = (props) => {
           Buscar pedidos
         </Typography>
 
-        <Filter />
+        <Filter
+          handleQuery={handleQuery}
+        />
       </Container>
 
       <Container
@@ -33,10 +50,10 @@ const Search = (props) => {
         }}
       >
         <Typography variant="overline" display="block" gutterBottom>
-          Se encontraron <b>N</b> resultados
+          Se encontraron <b>{count}</b> resultados
         </Typography>
 
-        <Detail />
+        <Detail updateCount={updateCount} query={query} />
       </Container>
     </>
   );

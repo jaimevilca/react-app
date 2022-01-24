@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
@@ -44,18 +44,18 @@ function StylistSelectChip(props) {
     const {
       target: { value },
     } = event;
-  
-    if (value.length <= 2) { 
+
+    if (value.length <= 2) {
       updateParticipants(id, value);
     } else {
-      dispatch( openSnackbar('info', 'Solo puede agregar máximo 2 participantes'));      
+      dispatch(openSnackbar('info', 'Solo puede agregar máximo 2 participantes'));
     }
   };
 
-  const getName = (username) => {    
+  const getName = (username) => {
     if (names.length > 0) {
       const filterById = names.filter((i) => i.username === username);
-      return filterById.length > 0 ? filterById[0].name : username;
+      return filterById.length > 0 ? filterById[0].username : username;
     }
 
     return username;
@@ -71,7 +71,7 @@ function StylistSelectChip(props) {
           padding: 0.5,
         },
       }}
-    >      
+    >
       <Select
         labelId={"demo-multiple-chip-label" + id}
         id={"demo-multiple-chip" + id}
@@ -87,13 +87,13 @@ function StylistSelectChip(props) {
         )}
         MenuProps={MenuProps}
       >
-        {names.map(({ username, name }, index) => (
+        {names.map(({ username }, index) => (
           <MenuItem
             key={index.toString()}
             value={username}
             style={getStyles(username, personName)}
           >
-            {name}
+            {username}
           </MenuItem>
         ))}
       </Select>
@@ -109,7 +109,7 @@ StylistSelectChip.propTypes = {
 };
 
 StylistSelectChip.defaultProps = {
-  id: '',  
+  id: '',
 }
 
 export default StylistSelectChip;

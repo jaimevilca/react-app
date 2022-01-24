@@ -109,8 +109,8 @@ function Order() {
     return !emptyParticipants;
   };
 
-  const onSuccessSaveData = (order) => {
-    setData({ ...form, id: order.id });
+  const onSuccessSaveData = (response) => {
+    setData({ ...form, id: response.data.id, status: response.data.status });
     dispatch(openSnackbar("success", "Se guardó la orden exitosamente"));
   };
 
@@ -151,7 +151,7 @@ function Order() {
           ORDER,
           data,
           token,
-          (order) => onSuccessSaveData(order),
+          (response) => onSuccessSaveData(response),
           null,
           dispatch
         );
@@ -160,7 +160,7 @@ function Order() {
           ORDER + "/" + data.id,
           data,
           token,
-          (order) => onSuccessSaveData(order),
+          (response) => onSuccessSaveData(response),
           null,
           dispatch
         );
@@ -245,8 +245,8 @@ function Order() {
                   form.status === STATUS.COMPLETED
                     ? "success"
                     : form.status === STATUS.CANCELLED
-                    ? "error"
-                    : "primary"
+                      ? "error"
+                      : "primary"
                 }
                 variant="outlined"
               />
@@ -273,7 +273,7 @@ function Order() {
               setChecked={setChecked}
             />
             <Box sx={{ textAlign: "center", paddingTop: 2 }}>
-              {form.status === STATUS.PROCESS && (
+              {(!form.status || form.status === STATUS.PROCESS) && (
                 <Button variant="outlined" color="secondary" onClick={saveData}>
                   Guardar
                 </Button>
@@ -282,15 +282,15 @@ function Order() {
               {![STATUS.COMPLETED, STATUS.IN_BOX, STATUS.CANCELLED].includes(
                 form.status
               ) && (
-                <Button
-                  sx={{ marginLeft: 3 }}
-                  variant="contained"
-                  color="secondary"
-                  onClick={sentToPay}
-                >
-                  Enviar a caja
-                </Button>
-              )}
+                  <Button
+                    sx={{ marginLeft: 3 }}
+                    variant="contained"
+                    color="secondary"
+                    onClick={sentToPay}
+                  >
+                    Enviar a caja
+                  </Button>
+                )}
 
               {role === ADMIN && form.status === STATUS.IN_BOX && (
                 <Button

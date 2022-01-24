@@ -46,7 +46,6 @@ function ItemDialog(props) {
 
 
   const handleChange = (e) => {
-    console.log(e.target);
     setEntity({
       ...entity,
       [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value

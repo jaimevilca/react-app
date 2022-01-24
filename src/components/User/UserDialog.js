@@ -33,7 +33,6 @@ function UserDialog(props) {
 
 
   const onSuccessSaveData = (data) => {
-    console.log(data);
     const newUser = {
       ...user, id: data.data.id, username, pwd, role, status
     };
@@ -42,7 +41,6 @@ function UserDialog(props) {
   };
 
   useEffect(() => {
-    console.log(user);
     setRole(user.role);
     setStatus(user.status);
     setUsername(user.username);
