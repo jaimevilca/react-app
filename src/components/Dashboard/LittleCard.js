@@ -35,7 +35,7 @@ const LittleCard = (props) => {
       </div>
 
       <div>
-        <Icon sx={{fontSize: 80}}>{icon}</Icon>
+        <Icon sx={{ fontSize: 80 }}>{icon}</Icon>
       </div>
     </Paper>
   );
@@ -44,7 +44,7 @@ const LittleCard = (props) => {
 LittleCard.propTypes = {
   title: PropTypes.string.isRequired,
   counter: PropTypes.number.isRequired,
-  icon: PropTypes.object.isRequired,
+  icon: PropTypes.string.isRequired,
 };
 
 export default LittleCard;

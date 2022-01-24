@@ -37,12 +37,7 @@ function Copyright(props) {
 export default function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
   };
 
   const [formValues, handleInputChange] = useForm({
@@ -84,15 +79,15 @@ export default function Login() {
             padding: 6,
           }}
         >
-           
-            
-          
-          
-          
 
-          <Avatar alt="" src="/test.jpg"  />
+
+
+
+
+
+          <Avatar alt="" src="/test.jpg" />
           <Typography color="secondary" variant="h5" textAlign="center" >Londoño</Typography>
-          
+
           <Box
             component="form"
             onSubmit={handleSubmit}

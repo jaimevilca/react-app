@@ -9,14 +9,36 @@ import TextField from "@mui/material/TextField";
 import { Paper } from "@mui/material";
 import Fab from "@mui/material/Fab";
 import SearchIcon from "@mui/icons-material/Search";
-import Box from "@mui/material/Box";
+
 
 const Search = (props) => {
-  const [age, setAge] = React.useState("");
+  const { handleQuery } = props;
+  let today = new Date();
+  let date = today.getFullYear() + '-' + ("0" + (today.getMonth() + 1)).slice(-2) + '-' + ("0" + (today.getDate())).slice(-2);
+  const [formData, setFormData] = React.useState({ status: "ALL", creationDateMin: date, creationDateMax: date });
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
+
+
+
+  const handleClick = () => {
+    let queryValue = [];
+    if (formData.status && formData.status !== "ALL")
+      queryValue.push(`status:${formData.status}`);
+    if (formData.creationDateMin)
+      queryValue.push(`creationDate>${(formData.creationDateMin).replaceAll("-", "")}`);
+    if (formData.creationDateMax)
+      queryValue.push(`creationDate<${(formData.creationDateMax).replaceAll("-", "")}`);
+    handleQuery(queryValue);
+  };
+
   return (
     <Paper>
       <Grid
@@ -27,60 +49,39 @@ const Search = (props) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={10} >
+        <Grid item lg={10} >
           <Grid container>
-            <Grid item xs={6} lg={6}>
-              <FormControl  sx={{ m: 1, minWidth: 195 }}>
+            <Grid item xs={6} lg={4}>
+              <FormControl sx={{ m: 1, minWidth: 195 }}>
                 <InputLabel id="demo-simple-select-standard-label">
                   Estado
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
-                  value={age}
+                  value={formData.status}
+                  name="status"
                   onChange={handleChange}
-                  label="Estado"
                 >
-                  <MenuItem value="">
-                    <em>Todos</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  <MenuItem value={"ALL"}>Todos</MenuItem>
+                  <MenuItem value={"EN CAJA"}>EN CAJA</MenuItem>
+                  <MenuItem value={"EN PROCESO"}>EN PROCESO</MenuItem>
+                  <MenuItem value={"COMPLETADO"}>COMPLETADO</MenuItem>
+                  <MenuItem value={"ANULADO"}>ANULADO</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
-            <Grid item xs={6} lg={6}>
-              <FormControl  sx={{ m: 1, minWidth: 195 }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Estilista
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={age}
-                  onChange={handleChange}
-                  label="Estilista"
-                >
-                  <MenuItem value="">
-                    <em>Todos</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={6}>
+            < Grid item xs={4}>
               <FormControl variant="standard" sx={{ m: 1 }}>
                 <TextField
                   id="date"
                   label="Desde"
                   type="date"
-                  defaultValue="2017-05-24"
-                  sx={{ width: "auto" }}
+                  name="creationDateMin"
+                  defaultValue={formData.creationDateMin}
+
+                  onChange={handleChange}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -88,14 +89,18 @@ const Search = (props) => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={4} >
               <FormControl variant="standard" sx={{ m: 1 }}>
                 <TextField
                   id="date"
                   label="Hasta"
                   type="date"
+                  name="creationDateMax"
+
                   sx={{ width: "auto" }}
-                  defaultValue="2017-05-24"
+                  defaultValue={formData.creationDateMax}
+
+                  onChange={handleChange}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -106,15 +111,18 @@ const Search = (props) => {
         </Grid>
 
         <Grid item xs={2}>
-          <Fab size="small" color="secondary" aria-label="Search">
+          <Fab size="small" color="secondary" aria-label="Search" onClick={handleClick}>
             <SearchIcon />
           </Fab>
         </Grid>
-      </Grid>
-    </Paper>
+      </Grid >
+    </Paper >
   );
 };
 
-Search.propTypes = {};
+Search.propTypes = {
+  handleQuery: PropTypes.func.isRequired,
+
+};
 
 export default Search;
