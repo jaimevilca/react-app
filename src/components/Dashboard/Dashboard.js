@@ -50,10 +50,14 @@ const Dashboard = (props) => {
     setList(orders.data);
   };
 
-  useEffect(() => {
-
+  const updateData = () => {
+    setFilterSelected(ALL_OPTION);
     getAuth(ORDER + "/dashboard", token, (orders) => successData(orders), null, dispatch);
+  };
 
+
+  useEffect(() => {
+    updateData();
   }, []);
 
   useEffect(() => {
@@ -121,7 +125,7 @@ const Dashboard = (props) => {
           display="block"
         >
           Last updated: {getCurrentDate() + " "}
-          <Fab size="small" color="secondary" aria-label="add">
+          <Fab size="small" color="secondary" aria-label="add" onClick={updateData}>
             <RefreshIcon />
           </Fab>
         </Typography>
