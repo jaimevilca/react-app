@@ -7,6 +7,7 @@ import Search from "../components/Search/Search";
 import Users from "../components/User/Users";
 import Items from "../components/Item/Items";
 import Dashboard from "../components/Dashboard/Dashboard";
+import CommissionReport from "../components/Reports/CommissionReport";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../actions/auth";
@@ -39,6 +40,8 @@ export const AppRouter = () => {
           <Route path="/item" element={<Items />} />
           <Route path="/user" element={<Users />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/commission-report" element={<CommissionReport />} />
+
         </Route>
 
         <Route path="/" element={!isLoggedIn ? <Login /> : <Dashboard />} />

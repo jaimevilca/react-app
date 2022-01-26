@@ -4,6 +4,7 @@ export const ORDER = BASE_URL + "/orders";
 export const CATEGORIES = BASE_URL + "/categories";
 export const USERS = BASE_URL + "/users";
 export const ITEMS = BASE_URL + '/items';
+export const REPORTS = BASE_URL + '/reports';
 export const ADMIN = "ADMIN";
 
 export const STATUS = {

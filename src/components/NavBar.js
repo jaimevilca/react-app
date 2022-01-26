@@ -45,6 +45,7 @@ function NavBar() {
     { page: "User", onClick: () => navigate("user") },
     { page: "Item", onClick: () => navigate("item") },
     { page: "Buscar", onClick: () => navigate("search") },
+    { page: "Reporte", onClick: () => navigate("commission-report") },
   ];
 
   const dispatch = useDispatch();
