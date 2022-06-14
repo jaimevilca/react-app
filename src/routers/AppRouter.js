@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Order from "../components/Order/Order";
 import Login from "../components/Login";
 import NavBar from "../components/NavBar";
@@ -8,6 +8,7 @@ import Users from "../components/User/Users";
 import Items from "../components/Item/Items";
 import Dashboard from "../components/Dashboard/Dashboard";
 import CommissionReport from "../components/Reports/CommissionReport";
+import SalesReport from "../components/Reports/SalesReport";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../actions/auth";
@@ -30,9 +31,10 @@ export const AppRouter = () => {
   }*/
 
   return (
-    <BrowserRouter>
+    <BrowserRouter >
       {isLoggedIn && <NavBar />}
-      <Routes>
+      <Routes >
+
         <Route element={<ProtectedRoutes isAuth={!!localStorage.getItem("user") || isLoggedIn} />}>
           <Route path="/order" element={<Order />} />
           <Route path="/order/:id" element={<Order />} />
@@ -41,11 +43,13 @@ export const AppRouter = () => {
           <Route path="/user" element={<Users />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/commission-report" element={<CommissionReport />} />
+          <Route path="/sales-report" element={<SalesReport />} />
+
 
         </Route>
 
-        <Route path="/" element={!isLoggedIn ? <Login /> : <Dashboard />} />
-      </Routes>
+        <Route path="app/" element={!isLoggedIn ? <Login /> : <Dashboard />} />
+      </ Routes>
 
       <StyleMessage />
       <Loading />

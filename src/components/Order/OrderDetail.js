@@ -36,7 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function OrderDetail(props) {
-  const { detail, setDetail, setChecked, names } = props;
+  const { detail, setDetail, setChecked, names, addTotal } = props;
 
   const removeDetail = (key) => {
     const filterDetail = detail.filter((det) => det.key != key);
@@ -53,17 +53,21 @@ function OrderDetail(props) {
     setDetail(updateParticipantsDetail);
   };
 
-  const [total, setTotal] = useState([]);
+  const [total, setTotal] = useState(0);
+
 
   useEffect(() => {
     if (detail.length > 0) {
       let newTotal = 0
-      detail.map((item) => {        
+      detail.map((item) => {
         newTotal += +item.price;
-      });      
+      });
       setTotal(newTotal);
+      addTotal(newTotal);
     }
   }, [detail])
+
+
 
   return (
     <TableContainer sx={{ marginTop: 4 }} component={Paper}>
@@ -78,8 +82,9 @@ function OrderDetail(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {detail.map(({ description, price, key, participants }, index) => (
-            <StyledTableRow
+          {detail.map(({ description, price, key, participants, compound }, index) => (
+
+            < StyledTableRow
               key={index.toString()}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
@@ -88,13 +93,14 @@ function OrderDetail(props) {
               </StyledTableCell>
               <StyledTableCell align="center">{description}</StyledTableCell>
               <StyledTableCell align="right" sx={{ maxWdth: "50px" }}>
-                ${price}
+                ${price}|
               </StyledTableCell>
               <StyledTableCell align="right">
                 <StylistSelectChip
                   updateParticipants={updateParticipants}
                   id={key}
                   initParticipants={participants}
+                  isCompound={compound}
                   names={names}
                 />
               </StyledTableCell>
@@ -119,12 +125,12 @@ function OrderDetail(props) {
             <TableCell variant="head" align="right" sx={{ padding: 0 }}>
               ${total}
             </TableCell>
-            <TableCell></TableCell>          
-            <TableCell></TableCell>          
+            <TableCell></TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableBody>
       </Table>
-    </TableContainer>
+    </TableContainer >
   );
 }
 
@@ -133,6 +139,7 @@ OrderDetail.propTypes = {
   setChecked: PropTypes.func.isRequired,
   detail: PropTypes.array.isRequired,
   names: PropTypes.array.isRequired,
+  addTotal: PropTypes.func.isRequired,
 };
 
 export default OrderDetail;

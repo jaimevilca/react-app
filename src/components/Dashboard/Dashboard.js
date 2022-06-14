@@ -9,15 +9,18 @@ import { getMainCardIcon } from "../../utils/constants";
 import SummaryCards from "./SummaryCards";
 import { useNavigate } from "react-router-dom";
 import OrderDetailDialog from "./OrderDetailDialog";
-import { ORDER } from "../../utils/constants";
+import { ORDER, PAYMENT_METHODS } from "../../utils/constants";
 import { getAuth } from "../../utils/axiosHandler";
 import { useSelector, useDispatch } from "react-redux";
+import AmountCard from "./AmountCard";
+
 
 const Dashboard = (props) => {
   const ALL_OPTION = "ALL";
   const [data, setData] = useState([]);
   const [dataSummary, setDataSummary] = useState([]);
   const [list, setList] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState([]);
   const [filterSelected, setFilterSelected] = useState(ALL_OPTION);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -50,9 +53,14 @@ const Dashboard = (props) => {
     setList(orders.data);
   };
 
+  const successPaymentMethodData = (paymentMethods) => {
+    setPaymentMethod(paymentMethods.data);
+  };
+
   const updateData = () => {
     setFilterSelected(ALL_OPTION);
     getAuth(ORDER + "/dashboard", token, (orders) => successData(orders), null, dispatch);
+    getAuth(PAYMENT_METHODS + "/dashboard", token, (paymentMethods) => successPaymentMethodData(paymentMethods), null, dispatch);
   };
 
 
@@ -105,7 +113,7 @@ const Dashboard = (props) => {
   return (
     <>
       <Container
-        maxWidth="md"
+
         sx={{
           marginTop: 3,
         }}
@@ -129,11 +137,19 @@ const Dashboard = (props) => {
             <RefreshIcon />
           </Fab>
         </Typography>
-
-        <SummaryCards
-          data={dataSummary}
-          setFilterSelected={setFilterSelected}
-        />
+        <Grid container spacing={1}>
+          <Grid item xs={3}>
+            < AmountCard
+              data={paymentMethod}
+            />
+          </Grid>
+          <Grid item xs={9}>
+            <SummaryCards
+              data={dataSummary}
+              setFilterSelected={setFilterSelected}
+            />
+          </Grid>
+        </Grid>
 
         <Typography
           sx={{ marginTop: 5 }}
@@ -169,6 +185,5 @@ const Dashboard = (props) => {
   );
 };
 
-Dashboard.propTypes = {};
 
 export default Dashboard;

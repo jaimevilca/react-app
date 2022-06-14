@@ -22,7 +22,7 @@ const MenuProps = {
 };
 
 function StylistSelectChip(props) {
-  const { names, updateParticipants, id, initParticipants } = props;
+  const { names, updateParticipants, id, initParticipants, isCompound } = props;
   const theme = useTheme();
   const [personName, setPersonName] = React.useState(initParticipants);
   function getStyles(name, personName) {
@@ -45,10 +45,14 @@ function StylistSelectChip(props) {
       target: { value },
     } = event;
 
-    if (value.length <= 2) {
+
+    if ((isCompound && value.length <= 2) || (!isCompound && value.length <= 1)) {
       updateParticipants(id, value);
-    } else {
+    } else if (isCompound) {
       dispatch(openSnackbar('info', 'Solo puede agregar máximo 2 participantes'));
+    } else {
+      dispatch(openSnackbar('info', 'Solo puede elegir máximo un participante'));
+
     }
   };
 

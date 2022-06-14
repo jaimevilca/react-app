@@ -40,17 +40,19 @@ function NavBar() {
 
 
   const pages = [
-    { page: "Dashboard", onClick: () => navigate("dashboard") },
-    { page: "Orden", onClick: () => navigate("order") },
-    { page: "User", onClick: () => navigate("user") },
-    { page: "Item", onClick: () => navigate("item") },
-    { page: "Buscar", onClick: () => navigate("search") },
-    { page: "Reporte", onClick: () => navigate("commission-report") },
+    { page: "Dashboard", onClick: () => navigate("dashboard"), user: "*" },
+    { page: "Orden", onClick: () => navigate("order"), user: "*" },
+    { page: "User", onClick: () => navigate("user"), user: "ADMIN" },
+    { page: "Item", onClick: () => navigate("item"), user: "ADMIN" },
+    { page: "Buscar", onClick: () => navigate("search"), user: "ADMIN" },
+    { page: "Comisiones", onClick: () => navigate("commission-report"), user: "ADMIN" },
+    { page: "Caja", onClick: () => navigate("sales-report"), user: "ADMIN" },
   ];
 
   const dispatch = useDispatch();
 
-  const { username } = useSelector((state) => state.auth);
+  const { username, role } = useSelector((state) => state.auth);
+
 
   const settings = [
     {
@@ -106,13 +108,17 @@ function NavBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map(({ page, onClick }, index) => (
-                <MenuItem key={index.toString()} onClick={() => { handleCloseNavMenu(); onClick(); }}>
+              {pages.map(({ page, onClick, user }, index) => {
+                return (user === role || user === "*") && (
+                  < MenuItem key={index.toString()} onClick={() => { handleCloseNavMenu(); onClick(); }}>
 
-                  <Typography textAlign="center">{page}</Typography>
+                    <Typography textAlign="center">{page + user}</Typography>
 
-                </MenuItem>
-              ))}
+                  </MenuItem>
+                )
+
+
+              })}
             </Menu>
           </Box>
           <Typography
@@ -124,20 +130,20 @@ function NavBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, flexDirection: 'row-reverse' }}>
-            {pages.map(({ page, onClick }, index) => (
+            {pages.map(({ page, onClick, user }, index) => {
+              return (user === role || user === "*") && (
+                <Button
+                  key={index.toString()}
+                  variant="outlined"
+                  onClick={() => { handleCloseNavMenu(); onClick(); }}
+                  sx={{ textDecoration: 'none', color: "white", display: "block" }}
+                >
 
-              <Button
-                key={index.toString()}
-                variant="outlined"
-                onClick={() => { handleCloseNavMenu(); onClick(); }}
-                sx={{ textDecoration: 'none', color: "white", display: "block" }}
-              >
+                  {page}
 
-                {page}
+                </Button>)
 
-              </Button>
-
-            ))}
+            })}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -171,7 +177,7 @@ function NavBar() {
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </AppBar >
   );
 }
 

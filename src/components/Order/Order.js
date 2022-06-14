@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import MainButtons from "./MainButtons";
 import Client from "./Client";
 import OrderDetail from "./OrderDetail";
+import PaymentMethodDialog from "./PaymentMethodDialog";
 import ItemDialog from "./ItemDialog";
 import { useForm } from "../../hooks/useForm";
 import Box from "@mui/material/Box";
@@ -24,6 +25,7 @@ import Typography from "@mui/material/Typography";
 
 function Order() {
   const [isOpenDialog, setOpenDialog] = useState(false);
+  const [isOpenPaymentMethodDialog, setOpenPaymentMethodDialog] = useState(false);
   const [detail, setDetail] = useState([]);
   const [items, setItems] = useState({});
   const [checked, setChecked] = React.useState([]);
@@ -31,6 +33,7 @@ function Order() {
   const [categories, setCategories] = React.useState([]);
 
   const [users, setUsers] = React.useState([]);
+  const [total, setTotal] = React.useState(0);
   const dispatch = useDispatch();
   let params = useParams();
   let navigate = useNavigate();
@@ -58,7 +61,9 @@ function Order() {
     setDetail(orderDetails);
     setData({ ...form, clientName, clientPhone, clientEmail, id, status });
   };
-
+  const addTotal = (totalVal) => {
+    setTotal(totalVal);
+  };
   useEffect(() => {
     getAuth(USERS, token, ({ data }) => setUsers(data), null, dispatch);
 
@@ -140,6 +145,8 @@ function Order() {
     }
   };
 
+
+
   const saveData = () => {
     if (isValidateParticipants()) {
       const data = {
@@ -173,11 +180,12 @@ function Order() {
     resetData();
   };
 
-  const complete = () => {
+  const complete = (paymentMethodObject) => {
+
     if (form.id) {
       patchAuth(
         ORDER + "/" + form.id + "/complete",
-        {},
+        paymentMethodObject,
         token,
         onSuccessComplete,
         null,
@@ -221,7 +229,10 @@ function Order() {
       );
     }
   };
+  const handleClose = () => {
+    setOpenPaymentMethodDialog(false);
 
+  };
   return (
     <>
       <Container
@@ -271,6 +282,7 @@ function Order() {
               detail={detail}
               names={users}
               setChecked={setChecked}
+              addTotal={addTotal}
             />
             <Box sx={{ textAlign: "center", paddingTop: 2 }}>
               {(!form.status || form.status === STATUS.PROCESS) && (
@@ -279,9 +291,9 @@ function Order() {
                 </Button>
               )}
 
-              {![STATUS.COMPLETED, STATUS.IN_BOX, STATUS.CANCELLED].includes(
+              {((role === ADMIN && form.status === STATUS.COMPLETED) || (![STATUS.COMPLETED, STATUS.IN_BOX, STATUS.CANCELLED].includes(
                 form.status
-              ) && (
+              ))) && (
                   <Button
                     sx={{ marginLeft: 3 }}
                     variant="contained"
@@ -319,7 +331,7 @@ function Order() {
                   sx={{ marginLeft: 3 }}
                   variant="contained"
                   color="success"
-                  onClick={complete}
+                  onClick={() => { setOpenPaymentMethodDialog(true) }}
                 >
                   Cobrar
                 </Button>
@@ -336,6 +348,15 @@ function Order() {
           setOpenDialog={setOpenDialog}
           checked={checked}
           setChecked={setChecked}
+        />
+        <PaymentMethodDialog
+
+          isOpenDialog={isOpenPaymentMethodDialog}
+          handleClose={handleClose}
+          getEntity={complete}
+          total={total}
+
+
         />
       </Container>
     </>

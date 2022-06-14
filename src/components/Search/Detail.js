@@ -140,9 +140,7 @@ function Detail(props) {
             ))}
           </TableBody>
         </Table>
-        <Fab sx={fabStyle} aria-label="Add" color="primary" onClick={add}>
-          <AddIcon />
-        </Fab>
+
         <OrderDetailDialog
           order={item}
           open={openRevealDialog}

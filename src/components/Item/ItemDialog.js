@@ -30,6 +30,8 @@ function ItemDialog(props) {
   const [entity, setEntity] = React.useState({});
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [priceError, setPriceError] = React.useState(false);
+  const validPrice = new RegExp('^[0-9]+(,[0-9]+)*$');
 
 
   const onSuccessSaveData = (data) => {
@@ -41,6 +43,9 @@ function ItemDialog(props) {
   useEffect(() => {
     if (item)
       setEntity(item);
+    else {
+      setEntity({ categoryId: 2 });
+    }
 
   }, [item]);
 
@@ -51,18 +56,32 @@ function ItemDialog(props) {
       [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value
     });
   };
+  const validate = () => {
+
+    if (!validPrice.test(entity.price)) {
+      setPriceError(true);
+      return false;
+    }
+    setPriceError(false);
+    return true;
+  };
   const save = () => {
-    const data = {
-      ...entity
-    };
-    if (!Array.isArray(data.price))
-      data.price = Array.from(data.price.split(','), Number);
-    if (!data.id) {
+    if (validate()) {
+      const data = {
+        ...entity,
+        commissionPrice2: Number(entity.commissionPrice2),
+        commissionPrice1: Number(entity.commissionPrice1)
+      };
+      if (!Array.isArray(data.price))
+        data.price = Array.from(data.price.split(','), Number);
+      if (!data.id) {
 
-      postAuth(ITEMS, data, token, onSuccessSaveData, null, dispatch);
+        postAuth(ITEMS, data, token, onSuccessSaveData, null, dispatch);
 
-    } else {
-      putAuth(ITEMS + '/' + entity.id, data, token, onSuccessSaveData, null, dispatch);
+      } else {
+        putAuth(ITEMS + '/' + entity.id, data, token, onSuccessSaveData, null, dispatch);
+      }
+
     }
 
   };
@@ -73,7 +92,6 @@ function ItemDialog(props) {
       <Dialog open={isOpenDialog} onClose={handleClose}>
         <DialogTitle>Item</DialogTitle>
         <DialogContent>
-          {JSON.stringify(entity)}
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
@@ -144,7 +162,7 @@ function ItemDialog(props) {
                 autoFocus
                 margin="dense"
                 label="Precio de comisión 1"
-                type="text"
+                type="number"
                 value={entity.commissionPrice1}
                 name="commissionPrice1"
                 onChange={handleChange}
@@ -156,7 +174,7 @@ function ItemDialog(props) {
                 autoFocus
                 margin="dense"
                 label="Precio de comisión 2"
-                type="text"
+                type="number"
                 value={entity.commissionPrice2}
                 name="commissionPrice2"
                 onChange={handleChange}
@@ -190,6 +208,7 @@ function ItemDialog(props) {
 
                 </Select>
               </FormControl>
+              {priceError && <p style={{ color: 'red' }}>El precio está incorrecto</p>}
 
             </Grid>
 

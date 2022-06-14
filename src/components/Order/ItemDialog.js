@@ -158,7 +158,7 @@ function ItemDialog(props) {
     return checked.indexOf(getKey(idSection, id)) !== -1;
   };
 
-  const addDetail = (id, key, description, price) => {
+  const addDetail = (id, key, description, price, compound) => {
     setDetail([...detail,
     {
       id,
@@ -166,7 +166,9 @@ function ItemDialog(props) {
       key,
       price: typeof price === "number" ? price : priceMultiple[key],
       description,
-      participants: []
+      participants: [],
+      compound
+
     }]);
   };
 
@@ -176,13 +178,13 @@ function ItemDialog(props) {
     //setChecked(newChecked);
   };
 
-  const handleToggle = (idSection, id, description, price) => () => {
+  const handleToggle = (idSection, id, description, price, compound) => () => {
     const value = getKey(idSection, id);
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      addDetail(id, value, description, price);
+      addDetail(id, value, description, price, compound);
       newChecked.push(value);
     } else {
       removeDetail(value);
@@ -195,7 +197,7 @@ function ItemDialog(props) {
   const getListItems = (idSection, rows) => {
     return (
       <List sx={{ width: "100%", bgcolor: "background.paper" }} disablePadding>
-        {rows.map(({ id, detail, price }, idx) => {
+        {rows.map(({ id, detail, price, compound }, idx) => {
           const labelId = `checkbox-list-label-${id}-${idSection}`;
 
           return (
@@ -212,7 +214,7 @@ function ItemDialog(props) {
             >
               <ListItemButton
                 role={undefined}
-                onClick={handleToggle(idSection, id, detail, price)}
+                onClick={handleToggle(idSection, id, detail, price, compound)}
                 dense
                 sx={{ padding: 0 }}
               >
